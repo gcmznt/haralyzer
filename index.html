@@ -1,0 +1,45 @@
+<!doctype html>
+<html ng-app>
+<head>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/haralyzer.css">
+    <title>HARalyzer</title>
+</head>
+<body>
+    <h1>HARalyzer</h1>
+
+    <div ng-controller="HarCtrl">
+        <h2>Choose your files</h2>
+        <div>
+            <input type="file" id="inputfile" multiple="multiple">
+            <div id="dragzone">or drop files here</div>
+        </div>
+        <h2>See the results</h2>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>File</th>
+                        <th>Page</th>
+                        <th>Resources</th>
+                        <th>Size</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="file in files">
+                        <td>{{ file.data.log.pages.0.startedDateTime }}</td>
+                        <td>{{ file.file.name }}</td>
+                        <td>{{ file.data.log.pages.0.title }}</td>
+                        <td class="text-right">{{ file.data.log.entries.length }}</td>
+                        <td class="text-right">{{ file.data.log.entriesSize }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.8/angular.min.js"></script>
+    <script src="/static/haralyzer.js"></script>
+</body>
+</html>
