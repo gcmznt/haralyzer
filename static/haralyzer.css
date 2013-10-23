@@ -1,0 +1,26 @@
+body {
+    padding: 20px;
+    background: url(pirate.png) 98% 20px no-repeat;
+}
+
+#dragzone {
+    font-weight: bold;
+    text-align: center;
+    padding: 1em 0;
+    margin: 1em 0;
+    color: #000;
+    border: 2px dashed #000;
+    border-radius: 7px;
+    cursor: default;
+}
+
+#dragzone.hover {
+    color: #fff;
+    border-color: #f00;
+}
+
+#report {
+    padding: 0 10px;
+    margin: 1em 0;
+    border: 1px solid #999;
+}
