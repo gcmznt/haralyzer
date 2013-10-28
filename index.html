@@ -37,12 +37,12 @@
             <div class="results">
                 <div class="compareCol" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'">
                     <span>{{ file.file }}</span>
-                    <span>{{ file.data.log.pages.0.startedDateTime }}</span>
+                    <span>{{ file.data.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}</span>
                     <span>{{ file.data.log.pages.0.title }}</span>
-                    <span>{{ file.data.log.entries.length }}</span>
-                    <span>{{ file.data.log.entriesReqHeadersSize }}</span>
-                    <span>{{ file.data.log.entriesResHeadersSize }}</span>
-                    <span>{{ file.data.log.entriesSize }}</span>
+                    <span class="text-right" ng-class="{'best': (ranges.entriesLength.min == file.data.log.entriesLength)}">{{ file.data.log.entriesLength | number }} <small ng-show="ranges.entriesLength.min != file.data.log.entriesLength">{{ (file.data.log.entriesLength / ranges.entriesLength.min * 100) | number:0 }}%</small></span>
+                    <span class="text-right" ng-class="{'best': (ranges.entriesReqHeadersSize.min == file.data.log.entriesReqHeadersSize)}">{{ file.data.log.entriesReqHeadersSize | number }} B <small ng-show="ranges.entriesReqHeadersSize.min != file.data.log.entriesReqHeadersSize">{{ (file.data.log.entriesReqHeadersSize / ranges.entriesReqHeadersSize.min * 100) | number:0 }}%</small></span>
+                    <span class="text-right" ng-class="{'best': (ranges.entriesResHeadersSize.min == file.data.log.entriesResHeadersSize)}">{{ file.data.log.entriesResHeadersSize | number }} B <small ng-show="ranges.entriesResHeadersSize.min != file.data.log.entriesResHeadersSize">{{ (file.data.log.entriesResHeadersSize / ranges.entriesResHeadersSize.min * 100) | number:0 }}%</small></span>
+                    <span class="text-right" ng-class="{'best': (ranges.entriesSize.min == file.data.log.entriesSize)}">{{ file.data.log.entriesSize | number }} B <small ng-show="ranges.entriesSize.min != file.data.log.entriesSize">{{ (file.data.log.entriesSize / ranges.entriesSize.min * 100) | number:0 }}%</small></span>
                 </div>
             </div>
         </div>

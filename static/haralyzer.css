@@ -45,3 +45,12 @@ body {
     clear: both;
     margin: 20px 0;
 }
+.best {
+    color: #468847;
+    font-weight: bold;
+}
+small {
+    opacity: .75;
+    float: left;
+}
+
