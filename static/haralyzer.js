@@ -1,5 +1,7 @@
 function HarCtrl($scope, $http) {
     $scope.files = [];
+    $scope.ranges = [];
+
 
     $scope.safeApply = function(fn) {
         var phase = this.$root.$$phase;
@@ -12,8 +14,30 @@ function HarCtrl($scope, $http) {
         }
     };
 
+    $scope.recalcRanges = function() {
+        $scope.ranges = [];
+        var props = ['entriesLength', 'entriesSize', 'entriesReqHeadersSize', 'entriesResHeadersSize']
+        angular.forEach($scope.selected(), function(file) {
+            for (var i = props.length - 1; i >= 0; i--) {
+                if (typeof($scope.ranges[props[i]]) === 'undefined') {
+                    $scope.ranges[props[i]] = {
+                        'max': file.data.log[props[i]],
+                        'min': file.data.log[props[i]]
+                    }
+                } else if ($scope.ranges[props[i]].min > file.data.log[props[i]]) {
+                    $scope.ranges[props[i]].min = file.data.log[props[i]];
+                } else if ($scope.ranges[props[i]].max < file.data.log[props[i]]) {
+                    $scope.ranges[props[i]].max = file.data.log[props[i]];
+                }
+            };
+        });
+        console.log($scope.ranges);
+    };
+    $scope.$watch('files', $scope.recalcRanges, true);
+
     $scope.addFile = function(f, e) {
         $scope.safeApply(function(){
+            e.log.entriesLength = e.log.entries.length;
             e.log.entriesSize = 0;
             e.log.entriesReqHeadersSize = 0;
             e.log.entriesResHeadersSize = 0;
