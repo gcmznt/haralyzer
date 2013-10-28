@@ -1,6 +1,14 @@
 function HarCtrl($scope, $http) {
+    var props = ['entriesLength', 'entriesSize', 'entriesReqHeadersSize', 'entriesResHeadersSize'];
+
     $scope.files = [];
-    $scope.ranges = [];
+    $scope.ranges = {};
+    $scope.compare = {
+        'entriesLength': 100,
+        'entriesSize': 100,
+        'entriesReqHeadersSize': 100,
+        'entriesResHeadersSize': 100
+    };
 
 
     $scope.safeApply = function(fn) {
@@ -10,28 +18,31 @@ function HarCtrl($scope, $http) {
                 fn();
             }
         } else {
-          this.$apply(fn);
+            this.$apply(fn);
         }
     };
 
     $scope.recalcRanges = function() {
-        $scope.ranges = [];
-        var props = ['entriesLength', 'entriesSize', 'entriesReqHeadersSize', 'entriesResHeadersSize']
+        delete $scope.ranges.max.entriesLength;
+        delete $scope.ranges.max;
+        delete $scope.ranges.min;
+        delete $scope.ranges;
+        var n = Date.now();
+        $scope.ranges = {'max': {'entriesLength':0}, 'min': {}};
+        console.log(n, $scope.ranges, $scope.ranges.max);
         angular.forEach($scope.selected(), function(file) {
+            console.log(n, file, $scope.ranges);
             for (var i = props.length - 1; i >= 0; i--) {
-                if (typeof($scope.ranges[props[i]]) === 'undefined') {
-                    $scope.ranges[props[i]] = {
-                        'max': file.data.log[props[i]],
-                        'min': file.data.log[props[i]]
-                    }
-                } else if ($scope.ranges[props[i]].min > file.data.log[props[i]]) {
-                    $scope.ranges[props[i]].min = file.data.log[props[i]];
-                } else if ($scope.ranges[props[i]].max < file.data.log[props[i]]) {
-                    $scope.ranges[props[i]].max = file.data.log[props[i]];
+                if (typeof($scope.ranges.min[props[i]]) === 'undefined') {
+                    $scope.ranges.min[props[i]] = file.data.log[props[i]];
+                    $scope.ranges.max = $scope.ranges.min;
+                } else if ($scope.ranges.min[props[i]] > file.data.log[props[i]]) {
+                    $scope.ranges.min[props[i]] = file.data.log[props[i]];
+                } else if ($scope.ranges.max[props[i]] < file.data.log[props[i]]) {
+                    $scope.ranges.max[props[i]] = file.data.log[props[i]];
                 }
-            };
+            }
         });
-        console.log($scope.ranges);
     };
     $scope.$watch('files', $scope.recalcRanges, true);
 
@@ -47,10 +58,23 @@ function HarCtrl($scope, $http) {
                 e.log.entriesReqHeadersSize += e.log.entries[i].request.headersSize;
                 e.log.entriesResHeadersSize += e.log.entries[i].response.headersSize;
                 e.log.respCodes[e.log.entries[i].response.status] += 1;
-            };
+            }
             console.log(f, e);
-            $scope.files.push({file: f, data: e, check: true});
+            $scope.files.push({file: f, data: e, check: true, unit: false});
         });
+    };
+
+    $scope.unit = function(f) {
+        angular.forEach($scope.selected(), function(file) {
+            file.unit = false;
+        });
+        f.unit = !f.unit;
+        $scope.compare = {
+            'entriesLength': f.data.log.entriesLength,
+            'entriesSize': f.data.log.entriesSize,
+            'entriesReqHeadersSize': f.data.log.entriesReqHeadersSize,
+            'entriesResHeadersSize': f.data.log.entriesResHeadersSize
+        };
     };
 
     $scope.removeSelected = function() {
@@ -67,23 +91,23 @@ function HarCtrl($scope, $http) {
             if (file.check) sel.push(file);
         });
         return sel;
-    }
+    };
 
-    $scope.selectAll = function(e) {
+    $scope.selectAll = function() {
         var st = ($scope.selected().length < $scope.files.length) ? true : false;
         angular.forEach($scope.files, function(file) {
             file.check = st;
         });
-    }
+    };
 
-    $scope.demo = function(e) {
+    $scope.demo = function() {
         $http.get('giko.it-before-gzip.har').then(function(response) {
             $scope.addFile('giko.it-before-gzip.har', response.data);
         });
         $http.get('giko.it-after-gzip.har').then(function(response) {
             $scope.addFile('giko.it-after-gzip.har', response.data);
         });
-    }
+    };
 }
 
 function dragover(e) {
