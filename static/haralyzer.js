@@ -3,10 +3,17 @@ function HarCtrl($scope) {
 
     $scope.addFile = function(f, e) {
         e.log.entriesSize = 0;
+        e.log.entriesReqHeadersSize = 0;
+        e.log.entriesResHeadersSize = 0;
+        e.log.respCodes = [];
         for (var i = e.log.entries.length - 1; i >= 0; i--) {
             e.log.entriesSize += e.log.entries[i].response.bodySize;
+            e.log.entriesReqHeadersSize += e.log.entries[i].request.headersSize;
+            e.log.entriesResHeadersSize += e.log.entries[i].response.headersSize;
+            e.log.respCodes[e.log.entries[i].response.status] += 1;
         };
-        $scope.files.push({file: f, data: e, check: false});
+        console.log(f, e);
+        $scope.files.push({file: f, data: e, check: true});
         $scope.$apply();
     };
 
@@ -25,6 +32,13 @@ function HarCtrl($scope) {
         });
         return sel;
     }
+
+    $scope.checkAll = function(e) {
+        var st = ($scope.selected().length < $scope.files.length) ? true : false;
+        angular.forEach($scope.files, function(file) {
+            file.check = st;
+        });
+    }
 }
 
 function dragover(e) {
@@ -40,7 +54,6 @@ function fileHandler(e) {
         var r = new FileReader();
         r.onload = (function(f) {
             return function(ev){
-                console.log(f, JSON.parse(ev.target.result));
                 angular.element(document.getElementById("main-controller")).scope().addFile(f, JSON.parse(ev.target.result));
             };
         })(f);
