@@ -15,11 +15,11 @@
         </p>
         <div ng-repeat="file in files | orderBy:'data.log.pages.0.startedDateTime'">
             <input type="checkbox" ng-model="file.check">
-            <span>{{ file.file.name }}</span>
+            <span>{{ file.file }}</span>
         </div>
         <div class="functions" ng-show="files.length">
-            <button type="button" class="btn btn-default" ng-click="checkAll()">{{ (selected().length < files.length) && 'check all' || 'uncheck all' }}</button>
-            <button type="button" class="btn btn-default" ng-click="delete()" ng-disabled="!selected().length">remove</button>
+            <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'check all' || 'uncheck all' }}</button>
+            <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button>
         </div>
 
         <h2 ng-show="files.length">See the results</h2>
@@ -35,7 +35,7 @@
             </div>
             <div class="results">
                 <div class="compareCol" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'">
-                    <span>{{ file.file.name }}</span>
+                    <span>{{ file.file }}</span>
                     <span>{{ file.data.log.pages.0.startedDateTime }}</span>
                     <span>{{ file.data.log.pages.0.title }}</span>
                     <span>{{ file.data.log.entries.length }}</span>

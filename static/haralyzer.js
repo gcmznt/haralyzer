@@ -1,23 +1,35 @@
-function HarCtrl($scope) {
+function HarCtrl($scope, $http) {
     $scope.files = [];
 
-    $scope.addFile = function(f, e) {
-        e.log.entriesSize = 0;
-        e.log.entriesReqHeadersSize = 0;
-        e.log.entriesResHeadersSize = 0;
-        e.log.respCodes = [];
-        for (var i = e.log.entries.length - 1; i >= 0; i--) {
-            e.log.entriesSize += e.log.entries[i].response.bodySize;
-            e.log.entriesReqHeadersSize += e.log.entries[i].request.headersSize;
-            e.log.entriesResHeadersSize += e.log.entries[i].response.headersSize;
-            e.log.respCodes[e.log.entries[i].response.status] += 1;
-        };
-        console.log(f, e);
-        $scope.files.push({file: f, data: e, check: true});
-        $scope.$apply();
+    $scope.safeApply = function(fn) {
+        var phase = this.$root.$$phase;
+        if(phase == '$apply' || phase == '$digest') {
+            if(fn && (typeof(fn) === 'function')) {
+                fn();
+            }
+        } else {
+          this.$apply(fn);
+        }
     };
 
-    $scope.delete = function() {
+    $scope.addFile = function(f, e) {
+        $scope.safeApply(function(){
+            e.log.entriesSize = 0;
+            e.log.entriesReqHeadersSize = 0;
+            e.log.entriesResHeadersSize = 0;
+            e.log.respCodes = [];
+            for (var i = e.log.entries.length - 1; i >= 0; i--) {
+                e.log.entriesSize += e.log.entries[i].response.bodySize;
+                e.log.entriesReqHeadersSize += e.log.entries[i].request.headersSize;
+                e.log.entriesResHeadersSize += e.log.entries[i].response.headersSize;
+                e.log.respCodes[e.log.entries[i].response.status] += 1;
+            };
+            console.log(f, e);
+            $scope.files.push({file: f, data: e, check: true});
+        });
+    };
+
+    $scope.removeSelected = function() {
         var oldFiles = $scope.files;
         $scope.files = [];
         angular.forEach(oldFiles, function(file) {
@@ -33,10 +45,19 @@ function HarCtrl($scope) {
         return sel;
     }
 
-    $scope.checkAll = function(e) {
+    $scope.selectAll = function(e) {
         var st = ($scope.selected().length < $scope.files.length) ? true : false;
         angular.forEach($scope.files, function(file) {
             file.check = st;
+        });
+    }
+
+    $scope.demo = function(e) {
+        $http.get('giko.it-before-gzip.har').then(function(response) {
+            $scope.addFile('giko.it-before-gzip.har', response.data);
+        });
+        $http.get('giko.it-after-gzip.har').then(function(response) {
+            $scope.addFile('giko.it-after-gzip.har', response.data);
         });
     }
 }
@@ -54,7 +75,7 @@ function fileHandler(e) {
         var r = new FileReader();
         r.onload = (function(f) {
             return function(ev){
-                angular.element(document.getElementById("main-controller")).scope().addFile(f, JSON.parse(ev.target.result));
+                angular.element(document.getElementById("main-controller")).scope().addFile(f.name, JSON.parse(ev.target.result));
             };
         })(f);
         r.readAsText(f);
