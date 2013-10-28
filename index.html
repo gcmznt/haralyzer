@@ -13,6 +13,7 @@
             Drop the HAR files on the page or find them on your PC
             <input type="file" id="inputfile" multiple="multiple">
         </p>
+        <button type="button" class="btn btn-default" ng-click="demo()" ng-show="!files.length">load demo files</button>
         <div ng-repeat="file in files | orderBy:'data.log.pages.0.startedDateTime'">
             <input type="checkbox" ng-model="file.check">
             <span>{{ file.file }}</span>
