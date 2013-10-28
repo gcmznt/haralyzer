@@ -13,31 +13,37 @@
             Drop the HAR files on the page or find them on your PC
             <input type="file" id="inputfile" multiple="multiple">
         </p>
+        <div ng-repeat="file in files | orderBy:'data.log.pages.0.startedDateTime'">
+            <input type="checkbox" ng-model="file.check">
+            <span>{{ file.file.name }}</span>
+        </div>
+        <div class="functions" ng-show="files.length">
+            <button type="button" class="btn btn-default" ng-click="checkAll()">{{ (selected().length < files.length) && 'check all' || 'uncheck all' }}</button>
+            <button type="button" class="btn btn-default" ng-click="delete()" ng-disabled="!selected().length">remove</button>
+        </div>
+
         <h2 ng-show="files.length">See the results</h2>
-        <div class="table-responsive" ng-show="files.length">
-            <table class="table table-hover">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>File</th>
-                        <th>Time</th>
-                        <th>Page</th>
-                        <th>Resources</th>
-                        <th>Size (B)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr ng-repeat="file in files | orderBy:'data.log.pages.0.startedDateTime'">
-                        <td><input type="checkbox" ng-model="file.check"></td>
-                        <td>{{ file.file.name }}</td>
-                        <td>{{ file.data.log.pages.0.startedDateTime }}</td>
-                        <td>{{ file.data.log.pages.0.title }}</td>
-                        <td class="text-right">{{ file.data.log.entries.length }}</td>
-                        <td class="text-right">{{ file.data.log.entriesSize }}</td>
-                    </tr>
-                </tbody>
-            </table>
-            <button type="button" class="btn btn-default" ng-click="delete()" ng-disabled="!selected().length">delete</button>
+        <div class="compare" ng-show="files.length">
+            <div class="compareCol">
+                <span>File</span>
+                <span>Time</span>
+                <span>Page</span>
+                <span>Resources</span>
+                <span>Request Headers</span>
+                <span>Response Headers</span>
+                <span>Response Size</span>
+            </div>
+            <div class="results">
+                <div class="compareCol" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'">
+                    <span>{{ file.file.name }}</span>
+                    <span>{{ file.data.log.pages.0.startedDateTime }}</span>
+                    <span>{{ file.data.log.pages.0.title }}</span>
+                    <span>{{ file.data.log.entries.length }}</span>
+                    <span>{{ file.data.log.entriesReqHeadersSize }}</span>
+                    <span>{{ file.data.log.entriesResHeadersSize }}</span>
+                    <span>{{ file.data.log.entriesSize }}</span>
+                </div>
+            </div>
         </div>
     </div>
 
