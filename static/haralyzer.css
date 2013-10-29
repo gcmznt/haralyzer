@@ -37,6 +37,15 @@ body {
     padding: 5px 10px;
     line-height: 25px;
 }
+.compareCol span small {
+    font-weight: normal;
+}
+.compareCol .worst small {
+    color: #bd0000;
+}
+.compareCol .better small {
+    color: #468847;
+}
 .results {
     display: block;
     overflow: auto;
@@ -44,10 +53,6 @@ body {
 .functions {
     clear: both;
     margin: 20px 0;
-}
-.best {
-    color: #468847;
-    font-weight: bold;
 }
 small {
     opacity: .75;
