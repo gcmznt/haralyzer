@@ -4,6 +4,7 @@ function HarCtrl($scope, $http) {
     $scope.files = [];
     $scope.ranges = {};
     $scope.compare = {};
+    $scope.compareWith = 'selected';
 
 
     $scope.safeApply = function(fn) {
@@ -18,13 +19,13 @@ function HarCtrl($scope, $http) {
     };
 
     $scope.recalcRanges = function() {
-        $scope.ranges = {'max': {}, 'min': {}};
+        $scope.ranges = {'worst': {}, 'best': {}};
         $scope.compare = {};
         angular.forEach($scope.selected(), function(file) {
             for (var i = props.length - 1; i >= 0; i--) {
                 var val = file.data.log[props[i]];
-                $scope.ranges.min[props[i]] = Math.min($scope.ranges.min[props[i]] || val, val);
-                $scope.ranges.max[props[i]] = Math.max($scope.ranges.max[props[i]] || val, val);
+                $scope.ranges.best[props[i]] = Math.min($scope.ranges.best[props[i]] || val, val);
+                $scope.ranges.worst[props[i]] = Math.max($scope.ranges.worst[props[i]] || val, val);
             }
             if (file.unit) {
                 for (var i = props.length - 1; i >= 0; i--) {
@@ -32,7 +33,11 @@ function HarCtrl($scope, $http) {
                 };
             }
         });
-        if (!Object.keys($scope.compare).length) $scope.compare = $scope.ranges.min;
+        if (!Object.keys($scope.compare).length) {
+            if ($scope.compareWith == 'best' || $scope.compareWith == 'worst') {
+                $scope.compare = $scope.ranges[$scope.compareWith];
+            }
+        }
         
         angular.forEach($scope.selected(), function(file) {
             file.data.perc = {};
@@ -43,6 +48,16 @@ function HarCtrl($scope, $http) {
     };
 
     $scope.$watch('files', $scope.recalcRanges, true);
+    
+    $scope.compareSet = function() {
+        // $scope.deunit();
+        if ($scope.highlighted().length) {
+            $scope.compareWith = 'selected';
+        }
+        $scope.recalcRanges();
+    };
+
+    $scope.$watch('compareWith', $scope.compareSet, true);
 
     $scope.addFile = function(f, e) {
         $scope.safeApply(function(){
@@ -62,11 +77,18 @@ function HarCtrl($scope, $http) {
         });
     };
 
+    $scope.deunit = function() {
+        angular.forEach($scope.files, function(file) {
+            file.unit = false;
+        });
+    };
+
     $scope.unit = function(f) {
         angular.forEach($scope.selected(), function(file) {
             if (file != f) file.unit = false;
         });
         f.unit = !f.unit;
+        $scope.compareWith = 'selected';
     };
 
     $scope.removeSelected = function() {
@@ -85,6 +107,14 @@ function HarCtrl($scope, $http) {
         return sel;
     };
 
+    $scope.highlighted = function() {
+        var sel = [];
+        angular.forEach($scope.files, function(file) {
+            if (file.unit) sel.push(file);
+        });
+        return sel;
+    };
+
     $scope.selectAll = function() {
         var st = ($scope.selected().length < $scope.files.length) ? true : false;
         angular.forEach($scope.files, function(file) {
@@ -93,14 +123,17 @@ function HarCtrl($scope, $http) {
     };
 
     $scope.demo = function() {
-        $http.get('giko.it-before-gzip.har').then(function(response) {
-            $scope.addFile('giko.it-before-gzip.har', response.data);
+        $http.get('giko.it.har').then(function(response) {
+            $scope.addFile('giko.it.har', response.data);
         });
-        $http.get('giko.it-after-gzip.har').then(function(response) {
-            $scope.addFile('giko.it-after-gzip.har', response.data);
+        $http.get('giko.it.gzip.har').then(function(response) {
+            $scope.addFile('giko.it.gzip.har', response.data);
         });
-        $http.get('giko.it-after-min.har').then(function(response) {
-            $scope.addFile('giko.it-after-min.har', response.data);
+        $http.get('giko.it.min.har').then(function(response) {
+            $scope.addFile('giko.it.min.har', response.data);
+        });
+        $http.get('giko.it.gzip.min.har').then(function(response) {
+            $scope.addFile('giko.it.gzip.min.har', response.data);
         });
     };
 }
