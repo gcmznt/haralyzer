@@ -135,6 +135,9 @@ function HarCtrl($scope, $http) {
         $http.get('giko.it.gzip.min.har').then(function(response) {
             $scope.addFile('giko.it.gzip.min.har', response.data);
         });
+        $http.get('giko.it.firefox.har').then(function(response) {
+            $scope.addFile('giko.it.firefox.har', response.data);
+        });
     };
 }
 
