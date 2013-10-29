@@ -23,27 +23,26 @@ function HarCtrl($scope, $http) {
     };
 
     $scope.recalcRanges = function() {
-        delete $scope.ranges.max.entriesLength;
-        delete $scope.ranges.max;
-        delete $scope.ranges.min;
-        delete $scope.ranges;
-        var n = Date.now();
-        $scope.ranges = {'max': {'entriesLength':0}, 'min': {}};
-        console.log(n, $scope.ranges, $scope.ranges.max);
+        $scope.ranges = {'max': {}, 'min': {}};
+        $scope.compare = {};
         angular.forEach($scope.selected(), function(file) {
-            console.log(n, file, $scope.ranges);
             for (var i = props.length - 1; i >= 0; i--) {
-                if (typeof($scope.ranges.min[props[i]]) === 'undefined') {
-                    $scope.ranges.min[props[i]] = file.data.log[props[i]];
-                    $scope.ranges.max = $scope.ranges.min;
-                } else if ($scope.ranges.min[props[i]] > file.data.log[props[i]]) {
-                    $scope.ranges.min[props[i]] = file.data.log[props[i]];
-                } else if ($scope.ranges.max[props[i]] < file.data.log[props[i]]) {
-                    $scope.ranges.max[props[i]] = file.data.log[props[i]];
-                }
+                var val = file.data.log[props[i]];
+                $scope.ranges.min[props[i]] = Math.min($scope.ranges.min[props[i]] || val, val);
+                $scope.ranges.max[props[i]] = Math.max($scope.ranges.max[props[i]] || val, val);
+            }
+            if (file.unit) {
+                $scope.compare = {
+                    'entriesLength': file.data.log.entriesLength,
+                    'entriesSize': file.data.log.entriesSize,
+                    'entriesReqHeadersSize': file.data.log.entriesReqHeadersSize,
+                    'entriesResHeadersSize': file.data.log.entriesResHeadersSize
+                };
             }
         });
+        if (!Object.keys($scope.compare).length) $scope.compare = $scope.ranges.min;
     };
+
     $scope.$watch('files', $scope.recalcRanges, true);
 
     $scope.addFile = function(f, e) {
@@ -59,22 +58,16 @@ function HarCtrl($scope, $http) {
                 e.log.entriesResHeadersSize += e.log.entries[i].response.headersSize;
                 e.log.respCodes[e.log.entries[i].response.status] += 1;
             }
-            console.log(f, e);
+            // console.log(f, e);
             $scope.files.push({file: f, data: e, check: true, unit: false});
         });
     };
 
     $scope.unit = function(f) {
         angular.forEach($scope.selected(), function(file) {
-            file.unit = false;
+            if (file != f) file.unit = false;
         });
         f.unit = !f.unit;
-        $scope.compare = {
-            'entriesLength': f.data.log.entriesLength,
-            'entriesSize': f.data.log.entriesSize,
-            'entriesReqHeadersSize': f.data.log.entriesReqHeadersSize,
-            'entriesResHeadersSize': f.data.log.entriesResHeadersSize
-        };
     };
 
     $scope.removeSelected = function() {
