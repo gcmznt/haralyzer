@@ -3,12 +3,7 @@ function HarCtrl($scope, $http) {
 
     $scope.files = [];
     $scope.ranges = {};
-    $scope.compare = {
-        'entriesLength': 100,
-        'entriesSize': 100,
-        'entriesReqHeadersSize': 100,
-        'entriesResHeadersSize': 100
-    };
+    $scope.compare = {};
 
 
     $scope.safeApply = function(fn) {
@@ -32,15 +27,19 @@ function HarCtrl($scope, $http) {
                 $scope.ranges.max[props[i]] = Math.max($scope.ranges.max[props[i]] || val, val);
             }
             if (file.unit) {
-                $scope.compare = {
-                    'entriesLength': file.data.log.entriesLength,
-                    'entriesSize': file.data.log.entriesSize,
-                    'entriesReqHeadersSize': file.data.log.entriesReqHeadersSize,
-                    'entriesResHeadersSize': file.data.log.entriesResHeadersSize
+                for (var i = props.length - 1; i >= 0; i--) {
+                    $scope.compare[props[i]] = file.data.log[props[i]];
                 };
             }
         });
         if (!Object.keys($scope.compare).length) $scope.compare = $scope.ranges.min;
+        
+        angular.forEach($scope.selected(), function(file) {
+            file.data.perc = {};
+            for (var i = props.length - 1; i >= 0; i--) {
+                file.data.perc[props[i]] = (file.data.log[props[i]] / $scope.compare[props[i]] * 100 - 100);
+            }
+        });
     };
 
     $scope.$watch('files', $scope.recalcRanges, true);
