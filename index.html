@@ -23,7 +23,7 @@
             <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button>
         </div>
 
-        <h2 ng-show="files.length">See the results</h2>
+        <h2 ng-show="selected().length">See the results</h2>
         <div class="compare" ng-show="selected().length">
             <div class="compareCol">
                 <span>File</span>
@@ -41,19 +41,19 @@
                     <span>{{ file.data.log.pages.0.title }}</span>
                     <span class="text-right" ng-class="{'best': (ranges.min.entriesLength == file.data.log.entriesLength)}">
                         {{ file.data.log.entriesLength | number }}
-                        <small ng-show="compare.entriesLength != file.data.log.entriesLength">{{ (file.data.log.entriesLength / compare.entriesLength * 100 - 100) | number:2 }}%</small>
+                        <small ng-show="file.data.perc.entriesLength"><i ng-show="file.data.perc.entriesLength > 0">+</i>{{ file.data.perc.entriesLength | number:2 }}%</small>
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.min.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize)}">
                         {{ file.data.log.entriesReqHeadersSize | number }} B
-                        <small ng-show="compare.entriesReqHeadersSize != file.data.log.entriesReqHeadersSize">{{ (file.data.log.entriesReqHeadersSize / compare.entriesReqHeadersSize * 100 - 100) | number:2 }}%</small>
+                        <small ng-show="file.data.perc.entriesReqHeadersSize"><i ng-show="file.data.perc.entriesReqHeadersSize > 0">+</i>{{ file.data.perc.entriesReqHeadersSize | number:2 }}%</small>
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.min.entriesResHeadersSize == file.data.log.entriesResHeadersSize)}">
                         {{ file.data.log.entriesResHeadersSize | number }} B
-                        <small ng-show="compare.entriesResHeadersSize != file.data.log.entriesResHeadersSize">{{ (file.data.log.entriesResHeadersSize / compare.entriesResHeadersSize * 100 - 100) | number:2 }}%</small>
+                        <small ng-show="file.data.perc.entriesResHeadersSize"><i ng-show="file.data.perc.entriesResHeadersSize > 0">+</i>{{ file.data.perc.entriesResHeadersSize | number:2 }}%</small>
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.min.entriesSize == file.data.log.entriesSize)}">
                         {{ file.data.log.entriesSize | number }} B
-                        <small ng-show="compare.entriesSize != file.data.log.entriesSize">{{ (file.data.log.entriesSize / compare.entriesSize * 100 - 100) | number:2 }}%</small>
+                        <small ng-show="file.data.perc.entriesSize"><i ng-show="file.data.perc.entriesSize > 0">+</i>{{ file.data.perc.entriesSize | number:2 }}%</small>
                     </span>
                 </div>
             </div>
