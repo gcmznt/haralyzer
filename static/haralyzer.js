@@ -99,6 +99,9 @@ function HarCtrl($scope, $http) {
         $http.get('giko.it-after-gzip.har').then(function(response) {
             $scope.addFile('giko.it-after-gzip.har', response.data);
         });
+        $http.get('giko.it-after-min.har').then(function(response) {
+            $scope.addFile('giko.it-after-min.har', response.data);
+        });
     };
 }
 
