@@ -28,9 +28,9 @@ function HarCtrl($scope, $http) {
                 $scope.ranges.worst[props[i]] = Math.max($scope.ranges.worst[props[i]] || val, val);
             }
             if (file.unit) {
-                for (var i = props.length - 1; i >= 0; i--) {
+                for (i = props.length - 1; i >= 0; i--) {
                     $scope.compare[props[i]] = file.data.log[props[i]];
-                };
+                }
             }
         });
         if (!Object.keys($scope.compare).length) {
@@ -39,20 +39,23 @@ function HarCtrl($scope, $http) {
             }
         }
         
+        var prev;
         angular.forEach($scope.selected(), function(file) {
             file.data.perc = {};
             for (var i = props.length - 1; i >= 0; i--) {
-                file.data.perc[props[i]] = (file.data.log[props[i]] / $scope.compare[props[i]] * 100 - 100);
+                var c = ($scope.compareWith == 'previous' && prev) ? prev.data.log[props[i]] : $scope.compare[props[i]];
+                file.data.perc[props[i]] = (file.data.log[props[i]] / c * 100 - 100);
+                console.log(c, file.data.log[props[i]]);
             }
+            prev = file;
         });
     };
 
     $scope.$watch('files', $scope.recalcRanges, true);
     
     $scope.compareSet = function() {
-        // $scope.deunit();
-        if ($scope.highlighted().length) {
-            $scope.compareWith = 'selected';
+        if ($scope.compareWith != 'selected') {
+            $scope.deunit();
         }
         $scope.recalcRanges();
     };
