@@ -24,7 +24,7 @@
         </div>
 
         <h2 ng-show="files.length">See the results</h2>
-        <div class="compare" ng-show="files.length">
+        <div class="compare" ng-show="selected().length">
             <div class="compareCol">
                 <span>File</span>
                 <span>Time</span>
@@ -35,14 +35,26 @@
                 <span>Response Size</span>
             </div>
             <div class="results">
-                <div class="compareCol" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'">
+                <div class="compareCol" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'" ng-click="unit(file)" ng-class="{'selected': file.unit}">
                     <span>{{ file.file }}</span>
                     <span>{{ file.data.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}</span>
                     <span>{{ file.data.log.pages.0.title }}</span>
-                    <span class="text-right" ng-class="{'best': (ranges.entriesLength.min == file.data.log.entriesLength)}">{{ file.data.log.entriesLength | number }} <small ng-show="ranges.entriesLength.min != file.data.log.entriesLength">{{ (file.data.log.entriesLength / ranges.entriesLength.min * 100) | number:0 }}%</small></span>
-                    <span class="text-right" ng-class="{'best': (ranges.entriesReqHeadersSize.min == file.data.log.entriesReqHeadersSize)}">{{ file.data.log.entriesReqHeadersSize | number }} B <small ng-show="ranges.entriesReqHeadersSize.min != file.data.log.entriesReqHeadersSize">{{ (file.data.log.entriesReqHeadersSize / ranges.entriesReqHeadersSize.min * 100) | number:0 }}%</small></span>
-                    <span class="text-right" ng-class="{'best': (ranges.entriesResHeadersSize.min == file.data.log.entriesResHeadersSize)}">{{ file.data.log.entriesResHeadersSize | number }} B <small ng-show="ranges.entriesResHeadersSize.min != file.data.log.entriesResHeadersSize">{{ (file.data.log.entriesResHeadersSize / ranges.entriesResHeadersSize.min * 100) | number:0 }}%</small></span>
-                    <span class="text-right" ng-class="{'best': (ranges.entriesSize.min == file.data.log.entriesSize)}">{{ file.data.log.entriesSize | number }} B <small ng-show="ranges.entriesSize.min != file.data.log.entriesSize">{{ (file.data.log.entriesSize / ranges.entriesSize.min * 100) | number:0 }}%</small></span>
+                    <span class="text-right" ng-class="{'best': (ranges.min.entriesLength == file.data.log.entriesLength)}">
+                        {{ file.data.log.entriesLength | number }}
+                        <small ng-show="compare.entriesLength != file.data.log.entriesLength">{{ (file.data.log.entriesLength / compare.entriesLength * 100 - 100) | number:2 }}%</small>
+                    </span>
+                    <span class="text-right" ng-class="{'best': (ranges.min.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize)}">
+                        {{ file.data.log.entriesReqHeadersSize | number }} B
+                        <small ng-show="compare.entriesReqHeadersSize != file.data.log.entriesReqHeadersSize">{{ (file.data.log.entriesReqHeadersSize / compare.entriesReqHeadersSize * 100 - 100) | number:2 }}%</small>
+                    </span>
+                    <span class="text-right" ng-class="{'best': (ranges.min.entriesResHeadersSize == file.data.log.entriesResHeadersSize)}">
+                        {{ file.data.log.entriesResHeadersSize | number }} B
+                        <small ng-show="compare.entriesResHeadersSize != file.data.log.entriesResHeadersSize">{{ (file.data.log.entriesResHeadersSize / compare.entriesResHeadersSize * 100 - 100) | number:2 }}%</small>
+                    </span>
+                    <span class="text-right" ng-class="{'best': (ranges.min.entriesSize == file.data.log.entriesSize)}">
+                        {{ file.data.log.entriesSize | number }} B
+                        <small ng-show="compare.entriesSize != file.data.log.entriesSize">{{ (file.data.log.entriesSize / compare.entriesSize * 100 - 100) | number:2 }}%</small>
+                    </span>
                 </div>
             </div>
         </div>
