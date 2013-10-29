@@ -46,6 +46,12 @@ body {
 .compareCol .better small {
     color: #468847;
 }
+.compareCol .glyphicon-star {
+    color: #468847;
+}
+.compareCol .glyphicon-star-empty {
+    color: #bd0000;
+}
 .results {
     display: block;
     overflow: auto;
