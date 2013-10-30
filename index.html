@@ -21,24 +21,34 @@
         <div class="functions" ng-show="files.length">
             <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'check all' || 'uncheck all' }}</button>
             <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button>
-            compare with
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'best')}">
-                    <input type="radio" ng-model="compareWith" value="best"> best
-                </label>
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'worst')}">
-                    <input type="radio" ng-model="compareWith" value="worst"> worst
-                </label>
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'previous')}">
-                    <input type="radio" ng-model="compareWith" value="previous"> previous
-                </label>
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'selected')}">
-                    <input type="radio" ng-model="compareWith" value="selected"> har selected
-                </label>
-            </div>
         </div>
 
         <h2 ng-show="selected().length">See the results</h2>
+        <div ng-show="selected().length">
+            compare files with
+            <div class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'best')}">
+                    <input type="radio" ng-model="compareWith" value="best">
+                    <i class="glyphicon glyphicon-star"></i> best
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'worst')}">
+                    <input type="radio" ng-model="compareWith" value="worst">
+                    <i class="glyphicon glyphicon-star-empty"></i> worst
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'previous')}">
+                    <input type="radio" ng-model="compareWith" value="previous">
+                    <i class="glyphicon glyphicon-arrow-left"></i> previous
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'next')}">
+                    <input type="radio" ng-model="compareWith" value="next">
+                    <i class="glyphicon glyphicon-arrow-right"></i> next
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'selected')}">
+                    <input type="radio" ng-model="compareWith" value="selected">
+                    <i class="glyphicon glyphicon-ok"></i> file selected
+                </label>
+            </div>
+        </div>
         <div class="compare" ng-show="selected().length">
             <div class="compareCol">
                 <span>File</span>

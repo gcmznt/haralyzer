@@ -28,9 +28,9 @@ function HarCtrl($scope, $http) {
                 $scope.ranges.worst[props[i]] = Math.max($scope.ranges.worst[props[i]] || val, val);
             }
             if (file.unit) {
-                for (var i = props.length - 1; i >= 0; i--) {
+                for (i = props.length - 1; i >= 0; i--) {
                     $scope.compare[props[i]] = file.data.log[props[i]];
-                };
+                }
             }
         });
         if (!Object.keys($scope.compare).length) {
@@ -39,20 +39,24 @@ function HarCtrl($scope, $http) {
             }
         }
         
-        angular.forEach($scope.selected(), function(file) {
+        var prev;
+        var order = ($scope.compareWith == 'next') ? 'reverse' : '';
+        angular.forEach($scope.selected(order), function(file) {
             file.data.perc = {};
             for (var i = props.length - 1; i >= 0; i--) {
-                file.data.perc[props[i]] = (file.data.log[props[i]] / $scope.compare[props[i]] * 100 - 100);
+                var c = (($scope.compareWith == 'previous' || $scope.compareWith == 'next') && prev) ? prev.data.log[props[i]] : $scope.compare[props[i]];
+                file.data.perc[props[i]] = (file.data.log[props[i]] / c * 100 - 100);
+                // console.log(c, file.data.log[props[i]]);
             }
+            prev = file;
         });
     };
 
     $scope.$watch('files', $scope.recalcRanges, true);
     
     $scope.compareSet = function() {
-        // $scope.deunit();
-        if ($scope.highlighted().length) {
-            $scope.compareWith = 'selected';
+        if ($scope.compareWith != 'selected') {
+            $scope.deunit();
         }
         $scope.recalcRanges();
     };
@@ -99,12 +103,17 @@ function HarCtrl($scope, $http) {
         });
     };
 
-    $scope.selected = function() {
+    $scope.selected = function(order) {
         var sel = [];
         angular.forEach($scope.files, function(file) {
             if (file.check) sel.push(file);
         });
-        return sel;
+        var sel = sel.sort(function(a, b){
+            a = new Date(a.data.log.pages[0].startedDateTime);
+            b = new Date(b.data.log.pages[0].startedDateTime);
+            return (a < b) ? -1 : (a > b) ? 1 : 0;
+        });
+        return (order && order == 'reverse') ? sel.reverse() : sel;
     };
 
     $scope.highlighted = function() {
@@ -134,6 +143,9 @@ function HarCtrl($scope, $http) {
         });
         $http.get('giko.it.gzip.min.har').then(function(response) {
             $scope.addFile('giko.it.gzip.min.har', response.data);
+        });
+        $http.get('giko.it.firefox.har').then(function(response) {
+            $scope.addFile('giko.it.firefox.har', response.data);
         });
     };
 }
