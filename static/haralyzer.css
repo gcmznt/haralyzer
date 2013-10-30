@@ -18,6 +18,7 @@ body {
 
 .compare {
     white-space: nowrap;
+    margin: 20px 0;
 }
 .compareCol {
     display: inline-block;
@@ -38,19 +39,30 @@ body {
     line-height: 25px;
 }
 .compareCol span small {
-    font-weight: normal;
+    display: inline;
+    padding: .3em .6em .2em;
+    font-size: 75%;
+    font-weight: bold;
+    line-height: 1;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: baseline;
+    border-radius: .25em;
+    margin: 4px;
+    float: left;
 }
 .compareCol .worst small {
-    color: #bd0000;
+    background-color: #d9534f;
 }
 .compareCol .better small {
-    color: #468847;
+    background-color: #5cb85c;
 }
 .compareCol .glyphicon-star {
-    color: #468847;
+    color: #5cb85c;
 }
 .compareCol .glyphicon-star-empty {
-    color: #bd0000;
+    color: #d9534f;
 }
 .results {
     display: block;
@@ -59,9 +71,5 @@ body {
 .functions {
     clear: both;
     margin: 20px 0;
-}
-small {
-    opacity: .75;
-    float: left;
 }
 

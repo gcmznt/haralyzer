@@ -40,12 +40,13 @@ function HarCtrl($scope, $http) {
         }
         
         var prev;
-        angular.forEach($scope.selected(), function(file) {
+        var order = ($scope.compareWith == 'next') ? 'reverse' : '';
+        angular.forEach($scope.selected(order), function(file) {
             file.data.perc = {};
             for (var i = props.length - 1; i >= 0; i--) {
-                var c = ($scope.compareWith == 'previous' && prev) ? prev.data.log[props[i]] : $scope.compare[props[i]];
+                var c = (($scope.compareWith == 'previous' || $scope.compareWith == 'next') && prev) ? prev.data.log[props[i]] : $scope.compare[props[i]];
                 file.data.perc[props[i]] = (file.data.log[props[i]] / c * 100 - 100);
-                console.log(c, file.data.log[props[i]]);
+                // console.log(c, file.data.log[props[i]]);
             }
             prev = file;
         });
@@ -102,12 +103,17 @@ function HarCtrl($scope, $http) {
         });
     };
 
-    $scope.selected = function() {
+    $scope.selected = function(order) {
         var sel = [];
         angular.forEach($scope.files, function(file) {
             if (file.check) sel.push(file);
         });
-        return sel;
+        var sel = sel.sort(function(a, b){
+            a = new Date(a.data.log.pages[0].startedDateTime);
+            b = new Date(b.data.log.pages[0].startedDateTime);
+            return (a < b) ? -1 : (a > b) ? 1 : 0;
+        });
+        return (order && order == 'reverse') ? sel.reverse() : sel;
     };
 
     $scope.highlighted = function() {
