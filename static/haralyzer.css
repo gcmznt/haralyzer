@@ -4,7 +4,7 @@ html, body {
 
 body {
     padding: 20px;
-    background: url(pirate.png) 98% 20px no-repeat;
+    /*background: url(pirate.png) 98% 20px no-repeat;*/
 }
 
 #inputfile {
@@ -15,7 +15,6 @@ body {
     margin: 1em 0;
     border: 1px solid #999;
 }
-
 .compare {
     white-space: nowrap;
     margin: 20px 0;
