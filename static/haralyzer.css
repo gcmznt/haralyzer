@@ -39,7 +39,6 @@ body {
     line-height: 25px;
 }
 .compareCol span small {
-    display: inline;
     padding: .3em .6em .2em;
     font-size: 75%;
     font-weight: bold;
@@ -49,7 +48,7 @@ body {
     white-space: nowrap;
     vertical-align: baseline;
     border-radius: .25em;
-    margin: 4px;
+    margin: 4px 0;
     float: left;
 }
 .compareCol .worst small {

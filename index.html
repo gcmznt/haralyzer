@@ -65,20 +65,20 @@
                     <span>{{ file.data.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}</span>
                     <span>{{ file.data.log.pages.0.title }}</span>
                     <span class="text-right" ng-class="{'best': (ranges.best.entriesLength == file.data.log.entriesLength), 'worst': (file.data.perc.entriesLength > 0), 'better': (file.data.perc.entriesLength < 0)}">
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesLength == file.data.log.entriesLength && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesLength == file.data.log.entriesLength && compareWith == 'worst'"></i> {{ file.data.log.entriesLength | number }}
                         <small ng-show="file.data.perc.entriesLength"><i ng-show="file.data.perc.entriesLength > 0">+</i>{{ file.data.perc.entriesLength | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesLength == file.data.log.entriesLength && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesLength == file.data.log.entriesLength && compareWith == 'worst'"></i> {{ file.data.log.entriesLength | number }}
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize), 'worst': (file.data.perc.entriesReqHeadersSize > 0), 'better': (file.data.perc.entriesReqHeadersSize < 0)}">
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize && compareWith == 'worst'"></i> {{ file.data.log.entriesReqHeadersSize | number }} B
                         <small ng-show="file.data.perc.entriesReqHeadersSize"><i ng-show="file.data.perc.entriesReqHeadersSize > 0">+</i>{{ file.data.perc.entriesReqHeadersSize | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize && compareWith == 'worst'"></i> {{ file.data.log.entriesReqHeadersSize | number }} B
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.entriesResHeadersSize == file.data.log.entriesResHeadersSize), 'worst': (file.data.perc.entriesResHeadersSize > 0), 'better': (file.data.perc.entriesResHeadersSize < 0)}">
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesResHeadersSize == file.data.log.entriesResHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesResHeadersSize == file.data.log.entriesResHeadersSize && compareWith == 'worst'"></i> {{ file.data.log.entriesResHeadersSize | number }} B
                         <small ng-show="file.data.perc.entriesResHeadersSize"><i ng-show="file.data.perc.entriesResHeadersSize > 0">+</i>{{ file.data.perc.entriesResHeadersSize | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesResHeadersSize == file.data.log.entriesResHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesResHeadersSize == file.data.log.entriesResHeadersSize && compareWith == 'worst'"></i> {{ file.data.log.entriesResHeadersSize | number }} B
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.entriesSize == file.data.log.entriesSize), 'worst': (file.data.perc.entriesSize > 0), 'better': (file.data.perc.entriesSize < 0)}">
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesSize == file.data.log.entriesSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesSize == file.data.log.entriesSize && compareWith == 'worst'"></i> {{ file.data.log.entriesSize | number }} B
                         <small ng-show="file.data.perc.entriesSize"><i ng-show="file.data.perc.entriesSize > 0">+</i>{{ file.data.perc.entriesSize | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesSize == file.data.log.entriesSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesSize == file.data.log.entriesSize && compareWith == 'worst'"></i> {{ file.data.log.entriesSize | number }} B
                     </span>
                 </div>
             </div>
