@@ -22,10 +22,12 @@ body {
 .compareCol {
     display: inline-block;
     border: 2px solid transparent;
+}
+.results .compareCol {
     min-width: 260px;
 }
 .compareCol.selected {
-    background: #f9f9f9;
+    background: #F8FcFf;
     border-color: #428bca;
 }
 .compare > .compareCol {
@@ -43,7 +45,7 @@ body {
     padding: 5px 10px;
     line-height: 25px;
 }
-.compareCol span small {
+.compareCol span .label {
     padding: .3em .6em .2em;
     font-size: 75%;
     font-weight: bold;
@@ -80,10 +82,10 @@ body {
 .compareCol .progress-bar:hover span {
     display: block;
 }
-.compareCol .worst small {
+.compareCol .worst .label {
     background-color: #d9534f;
 }
-.compareCol .better small {
+.compareCol .better .label {
     background-color: #5cb85c;
 }
 .compareCol .glyphicon-star {

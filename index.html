@@ -29,14 +29,6 @@
             <input type="file" id="inputfile" multiple="multiple">
         </p>
         <button type="button" class="btn btn-default" ng-click="demo()" ng-show="!files.length">load demo files</button>
-        <div ng-repeat="file in files | orderBy:'data.log.pages.0.startedDateTime'">
-            <input type="checkbox" ng-model="file.check">
-            <span>{{ file.name }}</span>
-        </div>
-        <div class="functions" ng-show="files.length">
-            <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'check all' || 'uncheck all' }}</button>
-            <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button>
-        </div>
 
         <h2 ng-show="selected().length">See the results</h2>
         <div ng-show="selected().length">
@@ -76,7 +68,7 @@
                     </label>
                     <label class="btn btn-primary" ng-class="{'active': (viewtype == 'simple')}">
                         <input type="radio" ng-model="viewtype" value="simple">
-                        <i class="glyphicon glyphicon-th-large"></i> only important data
+                        <i class="glyphicon glyphicon-th-large"></i> only main data
                     </label>
                 </div>
             </p>
@@ -103,35 +95,41 @@
             </div>
             <div class="results">
                 <div class="compareCol" ng-class="{'selected': file.unit}" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'">
-                    <span>{{ file.name }} <button type="button" ng-click="unit(file)" ng-show="!file.unit" class="btn btn-primary btn-xs pull-right">Select</button></span>
-                    <span>{{ file.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}</span>
-                    <span>{{ file.log.pages.0.title }}</span>
+                    <span>
+                        <div class="btn-group pull-right">
+                            <button type="button" ng-click="file.check = false" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-eye-close"></i></button>
+                            <button type="button" ng-click="unit(file)" ng-class="{'active': file.unit}" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-ok"></i></button>
+                        </div>
+                        {{ file.name }}
+                    </span>
+                    <span><small>{{ file.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}</small></span>
+                    <span><small>{{ file.log.pages.0.title }}</small></span>
                     <span class="text-right" ng-class="{'best': (ranges.best.entriesLength == file.calc.entriesLength), 'worst': (file.perc.entriesLength > 0), 'better': (file.perc.entriesLength < 0)}">
-                        <small ng-show="file.perc.entriesLength"><i ng-show="file.perc.entriesLength > 0">+</i>{{ file.perc.entriesLength | number:2 }}%</small>
+                        <small class="label" ng-show="file.perc.entriesLength"><i ng-show="file.perc.entriesLength > 0">+</i>{{ file.perc.entriesLength | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesLength == file.calc.entriesLength && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesLength == file.calc.entriesLength && compareWith == 'worst'"></i> {{ file.calc.entriesLength | number }}
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.entriesReqHeadersSize == file.calc.entriesReqHeadersSize), 'worst': (file.perc.entriesReqHeadersSize > 0), 'better': (file.perc.entriesReqHeadersSize < 0)}">
-                        <small ng-show="file.perc.entriesReqHeadersSize"><i ng-show="file.perc.entriesReqHeadersSize > 0">+</i>{{ file.perc.entriesReqHeadersSize | number:2 }}%</small>
+                        <small class="label" ng-show="file.perc.entriesReqHeadersSize"><i ng-show="file.perc.entriesReqHeadersSize > 0">+</i>{{ file.perc.entriesReqHeadersSize | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesReqHeadersSize == file.calc.entriesReqHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesReqHeadersSize == file.calc.entriesReqHeadersSize && compareWith == 'worst'"></i> {{ file.calc.entriesReqHeadersSize | number }} B
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.entriesResSize == file.calc.entriesResSize), 'worst': (file.perc.entriesResSize > 0), 'better': (file.perc.entriesResSize < 0)}">
-                        <small ng-show="file.perc.entriesResSize"><i ng-show="file.perc.entriesResSize > 0">+</i>{{ file.perc.entriesResSize | number:2 }}%</small>
+                        <small class="label" ng-show="file.perc.entriesResSize"><i ng-show="file.perc.entriesResSize > 0">+</i>{{ file.perc.entriesResSize | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesResSize == file.calc.entriesResSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesResSize == file.calc.entriesResSize && compareWith == 'worst'"></i> {{ file.calc.entriesResSize | number }} B
                     </span>
                     <span class="text-right full" ng-class="{'best': (ranges.best.entriesResHeadersSize == file.calc.entriesResHeadersSize), 'worst': (file.perc.entriesResHeadersSize > 0), 'better': (file.perc.entriesResHeadersSize < 0)}">
-                        <small ng-show="file.perc.entriesResHeadersSize"><i ng-show="file.perc.entriesResHeadersSize > 0">+</i>{{ file.perc.entriesResHeadersSize | number:2 }}%</small>
+                        <small class="label" ng-show="file.perc.entriesResHeadersSize"><i ng-show="file.perc.entriesResHeadersSize > 0">+</i>{{ file.perc.entriesResHeadersSize | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesResHeadersSize == file.calc.entriesResHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesResHeadersSize == file.calc.entriesResHeadersSize && compareWith == 'worst'"></i> {{ file.calc.entriesResHeadersSize | number }} B
                     </span>
                     <span class="text-right full" ng-class="{'best': (ranges.best.entriesSize == file.calc.entriesSize), 'worst': (file.perc.entriesSize > 0), 'better': (file.perc.entriesSize < 0)}">
-                        <small ng-show="file.perc.entriesSize"><i ng-show="file.perc.entriesSize > 0">+</i>{{ file.perc.entriesSize | number:2 }}%</small>
+                        <small class="label" ng-show="file.perc.entriesSize"><i ng-show="file.perc.entriesSize > 0">+</i>{{ file.perc.entriesSize | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesSize == file.calc.entriesSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesSize == file.calc.entriesSize && compareWith == 'worst'"></i> {{ file.calc.entriesSize | number }} B
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.onloadTime == file.calc.onloadTime), 'worst': (file.perc.onloadTime > 0), 'better': (file.perc.onloadTime < 0)}">
-                        <small ng-show="file.perc.onloadTime"><i ng-show="file.perc.onloadTime > 0">+</i>{{ file.perc.onloadTime | number:2 }}%</small>
+                        <small class="label" ng-show="file.perc.onloadTime"><i ng-show="file.perc.onloadTime > 0">+</i>{{ file.perc.onloadTime | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.onloadTime == file.calc.onloadTime && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.onloadTime == file.calc.onloadTime && compareWith == 'worst'"></i> {{ file.calc.onloadTime | number:0 }} ms
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.totalTime == file.calc.totalTime), 'worst': (file.perc.totalTime > 0), 'better': (file.perc.totalTime < 0)}">
-                        <small ng-show="file.perc.totalTime"><i ng-show="file.perc.totalTime > 0">+</i>{{ file.perc.totalTime | number:2 }}%</small>
+                        <small class="label" ng-show="file.perc.totalTime"><i ng-show="file.perc.totalTime > 0">+</i>{{ file.perc.totalTime | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.totalTime == file.calc.totalTime && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.totalTime == file.calc.totalTime && compareWith == 'worst'"></i> {{ file.calc.totalTime | number:0 }} ms
                     </span>
                     <span>
@@ -176,6 +174,21 @@
                     </span>
                 </div>
             </div>
+        </div>
+        <h2 ng-show="hidden().length">Hidden files</h2>
+        <ul ng-repeat="file in hidden()">
+            <li>
+                <div class="btn-group">
+                    <button type="button" ng-click="file.check = true" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-eye-open"></i></button>
+                    <button type="button" ng-click="remove(file)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+                </div>
+                {{ file.name }}
+                <small>[{{ file.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}]</small>
+            </li>
+        </ul>
+        <div class="functions" ng-show="hidden().length">
+            <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'view all' || 'uncheck all' }}</button>
+            <!-- <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button> -->
         </div>
     </div>
 
