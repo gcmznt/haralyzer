@@ -145,10 +145,31 @@ function HarCtrl($scope, $http) {
         });
     };
 
+    $scope.remove = function(f) {
+        var oldFiles = $scope.files;
+        $scope.files = [];
+        angular.forEach(oldFiles, function(file) {
+            if (file != f) $scope.files.push(file);
+        });
+    };
+
     $scope.selected = function(order) {
         var sel = [];
         angular.forEach($scope.files, function(file) {
             if (file.check) sel.push(file);
+        });
+        var sel = sel.sort(function(a, b){
+            a = new Date(a.log.pages[0].startedDateTime);
+            b = new Date(b.log.pages[0].startedDateTime);
+            return (a < b) ? -1 : (a > b) ? 1 : 0;
+        });
+        return (order && order == 'reverse') ? sel.reverse() : sel;
+    };
+
+    $scope.hidden = function(order) {
+        var sel = [];
+        angular.forEach($scope.files, function(file) {
+            if (!file.check) sel.push(file);
         });
         var sel = sel.sort(function(a, b){
             a = new Date(a.log.pages[0].startedDateTime);
