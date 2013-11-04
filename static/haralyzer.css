@@ -21,13 +21,19 @@ body {
 }
 .compareCol {
     display: inline-block;
+    border: 2px solid transparent;
+    min-width: 260px;
 }
 .compareCol.selected {
     background: #f9f9f9;
+    border-color: #428bca;
 }
 .compare > .compareCol {
-    font-weight: bold;
     float: left;
+    font-weight: bold;
+}
+.compare > .compareCol .full {
+    font-weight: normal;
 }
 .compareCol span {
     display: block;
@@ -50,6 +56,30 @@ body {
     margin: 4px 0;
     float: left;
 }
+.compareCol .full {
+    display: none;
+}
+.full .compareCol .full {
+    display: block;
+}
+.compareCol .progress {
+    overflow: visible;
+}
+.compareCol .progress-bar {
+    position: relative;
+}
+.compareCol .progress-bar span {
+    display: none;
+    background: black;
+    position: absolute;
+    bottom: 20px;
+}
+.compareCol .progress-bar:last-child span {
+    right: 0;
+}
+.compareCol .progress-bar:hover span {
+    display: block;
+}
 .compareCol .worst small {
     background-color: #d9534f;
 }
@@ -71,3 +101,21 @@ body {
     margin: 20px 0;
 }
 
+.progress-bar-blocked {
+    background-color: #d9534f;
+}
+.progress-bar-dns {
+    background-color: #5bc0de;
+}
+.progress-bar-connect {
+    background-color: #6E2BBD;
+}
+.progress-bar-send {
+    background-color: #428bca;
+}
+.progress-bar-wait {
+    background-color: #f0ad4e;
+}
+.progress-bar-receive {
+    background-color: #5cb85c;
+}

@@ -4,6 +4,16 @@
     <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="static/haralyzer.css">
     <title>HARalyzer</title>
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-45415475-1', 'giacomozinetti.github.io');
+        ga('send', 'pageview');
+    </script>
 </head>
 <body>
     <div ng-controller="HarCtrl" class="container-fluid" id="main-controller">
@@ -21,7 +31,7 @@
         <button type="button" class="btn btn-default" ng-click="demo()" ng-show="!files.length">load demo files</button>
         <div ng-repeat="file in files | orderBy:'data.log.pages.0.startedDateTime'">
             <input type="checkbox" ng-model="file.check">
-            <span>{{ file.file }}</span>
+            <span>{{ file.name }}</span>
         </div>
         <div class="functions" ng-show="files.length">
             <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'check all' || 'uncheck all' }}</button>
@@ -30,60 +40,139 @@
 
         <h2 ng-show="selected().length">See the results</h2>
         <div ng-show="selected().length">
-            compare files with
-            <div class="btn-group" data-toggle="buttons">
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'best')}">
-                    <input type="radio" ng-model="compareWith" value="best">
-                    <i class="glyphicon glyphicon-star"></i> best
-                </label>
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'worst')}">
-                    <input type="radio" ng-model="compareWith" value="worst">
-                    <i class="glyphicon glyphicon-star-empty"></i> worst
-                </label>
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'previous')}">
-                    <input type="radio" ng-model="compareWith" value="previous">
-                    <i class="glyphicon glyphicon-arrow-left"></i> previous
-                </label>
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'next')}">
-                    <input type="radio" ng-model="compareWith" value="next">
-                    <i class="glyphicon glyphicon-arrow-right"></i> next
-                </label>
-                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'selected')}">
-                    <input type="radio" ng-model="compareWith" value="selected">
-                    <i class="glyphicon glyphicon-ok"></i> file selected
-                </label>
-            </div>
+            <p>
+                compare files with
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'best')}">
+                        <input type="radio" ng-model="compareWith" value="best">
+                        <i class="glyphicon glyphicon-star"></i> best
+                    </label>
+                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'worst')}">
+                        <input type="radio" ng-model="compareWith" value="worst">
+                        <i class="glyphicon glyphicon-star-empty"></i> worst
+                    </label>
+                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'previous')}">
+                        <input type="radio" ng-model="compareWith" value="previous">
+                        <i class="glyphicon glyphicon-arrow-left"></i> previous
+                    </label>
+                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'next')}">
+                        <input type="radio" ng-model="compareWith" value="next">
+                        <i class="glyphicon glyphicon-arrow-right"></i> next
+                    </label>
+                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'selected')}">
+                        <input type="radio" ng-model="compareWith" value="selected">
+                        <i class="glyphicon glyphicon-ok"></i> file selected
+                    </label>
+                </div>
+            </p>
         </div>
-        <div class="compare" ng-show="selected().length">
+        <div ng-show="selected().length">
+            <p>
+                show
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary" ng-class="{'active': (viewtype == 'full')}">
+                        <input type="radio" ng-model="viewtype" value="full">
+                        <i class="glyphicon glyphicon-th"></i> full list
+                    </label>
+                    <label class="btn btn-primary" ng-class="{'active': (viewtype == 'simple')}">
+                        <input type="radio" ng-model="viewtype" value="simple">
+                        <i class="glyphicon glyphicon-th-large"></i> only important data
+                    </label>
+                </div>
+            </p>
+        </div>
+        <div class="compare {{ viewtype }}" ng-show="selected().length">
             <div class="compareCol">
                 <span>File</span>
                 <span>Time</span>
                 <span>Page</span>
                 <span>Resources</span>
-                <span>Request Headers</span>
-                <span>Response Headers</span>
-                <span>Response Size</span>
+                <span>Request</span>
+                <span>Response</span>
+                <span class="full">Response Headers</span>
+                <span class="full">Response Size</span>
+                <span>Onload time</span>
+                <span>Total transfer time</span>
+                <span>Transfer time splitted</span>
+                <span class="full">Blocked</span>
+                <span class="full">Dns</span>
+                <span class="full">Connect</span>
+                <span class="full">Send</span>
+                <span class="full">Wait</span>
+                <span class="full">Receive</span>
             </div>
             <div class="results">
-                <div class="compareCol" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'" ng-click="unit(file)" ng-class="{'selected': file.unit}">
-                    <span>{{ file.file }}</span>
-                    <span>{{ file.data.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}</span>
-                    <span>{{ file.data.log.pages.0.title }}</span>
-                    <span class="text-right" ng-class="{'best': (ranges.best.entriesLength == file.data.log.entriesLength), 'worst': (file.data.perc.entriesLength > 0), 'better': (file.data.perc.entriesLength < 0)}">
-                        <small ng-show="file.data.perc.entriesLength"><i ng-show="file.data.perc.entriesLength > 0">+</i>{{ file.data.perc.entriesLength | number:2 }}%</small>
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesLength == file.data.log.entriesLength && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesLength == file.data.log.entriesLength && compareWith == 'worst'"></i> {{ file.data.log.entriesLength | number }}
+                <div class="compareCol" ng-class="{'selected': file.unit}" ng-repeat="file in selected() | orderBy:'data.log.pages.0.startedDateTime'">
+                    <span>{{ file.name }} <button type="button" ng-click="unit(file)" ng-show="!file.unit" class="btn btn-primary btn-xs pull-right">Select</button></span>
+                    <span>{{ file.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}</span>
+                    <span>{{ file.log.pages.0.title }}</span>
+                    <span class="text-right" ng-class="{'best': (ranges.best.entriesLength == file.calc.entriesLength), 'worst': (file.perc.entriesLength > 0), 'better': (file.perc.entriesLength < 0)}">
+                        <small ng-show="file.perc.entriesLength"><i ng-show="file.perc.entriesLength > 0">+</i>{{ file.perc.entriesLength | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesLength == file.calc.entriesLength && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesLength == file.calc.entriesLength && compareWith == 'worst'"></i> {{ file.calc.entriesLength | number }}
                     </span>
-                    <span class="text-right" ng-class="{'best': (ranges.best.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize), 'worst': (file.data.perc.entriesReqHeadersSize > 0), 'better': (file.data.perc.entriesReqHeadersSize < 0)}">
-                        <small ng-show="file.data.perc.entriesReqHeadersSize"><i ng-show="file.data.perc.entriesReqHeadersSize > 0">+</i>{{ file.data.perc.entriesReqHeadersSize | number:2 }}%</small>
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesReqHeadersSize == file.data.log.entriesReqHeadersSize && compareWith == 'worst'"></i> {{ file.data.log.entriesReqHeadersSize | number }} B
+                    <span class="text-right" ng-class="{'best': (ranges.best.entriesReqHeadersSize == file.calc.entriesReqHeadersSize), 'worst': (file.perc.entriesReqHeadersSize > 0), 'better': (file.perc.entriesReqHeadersSize < 0)}">
+                        <small ng-show="file.perc.entriesReqHeadersSize"><i ng-show="file.perc.entriesReqHeadersSize > 0">+</i>{{ file.perc.entriesReqHeadersSize | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesReqHeadersSize == file.calc.entriesReqHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesReqHeadersSize == file.calc.entriesReqHeadersSize && compareWith == 'worst'"></i> {{ file.calc.entriesReqHeadersSize | number }} B
                     </span>
-                    <span class="text-right" ng-class="{'best': (ranges.best.entriesResHeadersSize == file.data.log.entriesResHeadersSize), 'worst': (file.data.perc.entriesResHeadersSize > 0), 'better': (file.data.perc.entriesResHeadersSize < 0)}">
-                        <small ng-show="file.data.perc.entriesResHeadersSize"><i ng-show="file.data.perc.entriesResHeadersSize > 0">+</i>{{ file.data.perc.entriesResHeadersSize | number:2 }}%</small>
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesResHeadersSize == file.data.log.entriesResHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesResHeadersSize == file.data.log.entriesResHeadersSize && compareWith == 'worst'"></i> {{ file.data.log.entriesResHeadersSize | number }} B
+                    <span class="text-right" ng-class="{'best': (ranges.best.entriesResSize == file.calc.entriesResSize), 'worst': (file.perc.entriesResSize > 0), 'better': (file.perc.entriesResSize < 0)}">
+                        <small ng-show="file.perc.entriesResSize"><i ng-show="file.perc.entriesResSize > 0">+</i>{{ file.perc.entriesResSize | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesResSize == file.calc.entriesResSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesResSize == file.calc.entriesResSize && compareWith == 'worst'"></i> {{ file.calc.entriesResSize | number }} B
                     </span>
-                    <span class="text-right" ng-class="{'best': (ranges.best.entriesSize == file.data.log.entriesSize), 'worst': (file.data.perc.entriesSize > 0), 'better': (file.data.perc.entriesSize < 0)}">
-                        <small ng-show="file.data.perc.entriesSize"><i ng-show="file.data.perc.entriesSize > 0">+</i>{{ file.data.perc.entriesSize | number:2 }}%</small>
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesSize == file.data.log.entriesSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesSize == file.data.log.entriesSize && compareWith == 'worst'"></i> {{ file.data.log.entriesSize | number }} B
+                    <span class="text-right full" ng-class="{'best': (ranges.best.entriesResHeadersSize == file.calc.entriesResHeadersSize), 'worst': (file.perc.entriesResHeadersSize > 0), 'better': (file.perc.entriesResHeadersSize < 0)}">
+                        <small ng-show="file.perc.entriesResHeadersSize"><i ng-show="file.perc.entriesResHeadersSize > 0">+</i>{{ file.perc.entriesResHeadersSize | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesResHeadersSize == file.calc.entriesResHeadersSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesResHeadersSize == file.calc.entriesResHeadersSize && compareWith == 'worst'"></i> {{ file.calc.entriesResHeadersSize | number }} B
+                    </span>
+                    <span class="text-right full" ng-class="{'best': (ranges.best.entriesSize == file.calc.entriesSize), 'worst': (file.perc.entriesSize > 0), 'better': (file.perc.entriesSize < 0)}">
+                        <small ng-show="file.perc.entriesSize"><i ng-show="file.perc.entriesSize > 0">+</i>{{ file.perc.entriesSize | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesSize == file.calc.entriesSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesSize == file.calc.entriesSize && compareWith == 'worst'"></i> {{ file.calc.entriesSize | number }} B
+                    </span>
+                    <span class="text-right" ng-class="{'best': (ranges.best.onloadTime == file.calc.onloadTime), 'worst': (file.perc.onloadTime > 0), 'better': (file.perc.onloadTime < 0)}">
+                        <small ng-show="file.perc.onloadTime"><i ng-show="file.perc.onloadTime > 0">+</i>{{ file.perc.onloadTime | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.onloadTime == file.calc.onloadTime && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.onloadTime == file.calc.onloadTime && compareWith == 'worst'"></i> {{ file.calc.onloadTime | number:0 }} ms
+                    </span>
+                    <span class="text-right" ng-class="{'best': (ranges.best.totalTime == file.calc.totalTime), 'worst': (file.perc.totalTime > 0), 'better': (file.perc.totalTime < 0)}">
+                        <small ng-show="file.perc.totalTime"><i ng-show="file.perc.totalTime > 0">+</i>{{ file.perc.totalTime | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.totalTime == file.calc.totalTime && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.totalTime == file.calc.totalTime && compareWith == 'worst'"></i> {{ file.calc.totalTime | number:0 }} ms
+                    </span>
+                    <span>
+                        <div class="progress">
+                            <div class="progress-bar progress-bar-blocked" style="width: {{ file.calc.timingsPerc.blocked }}%">
+                                <span>{{ file.calc.timingsPerc.blocked | number:0 }}% blocked</span>
+                            </div>
+                            <div class="progress-bar progress-bar-dns" style="width: {{ file.calc.timingsPerc.dns }}%">
+                                <span>{{ file.calc.timingsPerc.dns | number:0 }}% dns</span>
+                            </div>
+                            <div class="progress-bar progress-bar-connect" style="width: {{ file.calc.timingsPerc.connect }}%">
+                                <span>{{ file.calc.timingsPerc.connect | number:0 }}% connect</span>
+                            </div>
+                            <div class="progress-bar progress-bar-send" style="width: {{ file.calc.timingsPerc.send }}%">
+                                <span>{{ file.calc.timingsPerc.send | number:0 }}% send</span>
+                            </div>
+                            <div class="progress-bar progress-bar-wait" style="width: {{ file.calc.timingsPerc.wait }}%">
+                                <span>{{ file.calc.timingsPerc.wait | number:0 }}% wait</span>
+                            </div>
+                            <div class="progress-bar progress-bar-receive" style="width: {{ file.calc.timingsPerc.receive }}%">
+                                <span>{{ file.calc.timingsPerc.receive | number:0 }}% receive</span>
+                            </div>
+                        </div>
+                    </span>
+                    <span class="text-right full">
+                        {{ file.calc.timings.blocked | number:0 }} ms
+                    </span>
+                    <span class="text-right full">
+                        {{ file.calc.timings.dns | number:0 }} ms
+                    </span>
+                    <span class="text-right full">
+                        {{ file.calc.timings.connect | number:0 }} ms
+                    </span>
+                    <span class="text-right full">
+                        {{ file.calc.timings.send | number:0 }} ms
+                    </span>
+                    <span class="text-right full">
+                        {{ file.calc.timings.wait | number:0 }} ms
+                    </span>
+                    <span class="text-right full">
+                        {{ file.calc.timings.receive | number:0 }} ms
                     </span>
                 </div>
             </div>

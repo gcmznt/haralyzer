@@ -1,10 +1,19 @@
 function HarCtrl($scope, $http) {
-    var props = ['entriesLength', 'entriesSize', 'entriesReqHeadersSize', 'entriesResHeadersSize'];
+    var props = [
+        'entriesLength',
+        'entriesReqHeadersSize',
+        'entriesSize',
+        'entriesResHeadersSize',
+        'entriesResSize',
+        'totalTime',
+        'onloadTime'
+    ];
 
     $scope.files = [];
     $scope.ranges = {};
     $scope.compare = {};
     $scope.compareWith = 'selected';
+    $scope.viewtype = 'simple';
 
 
     $scope.safeApply = function(fn) {
@@ -23,13 +32,13 @@ function HarCtrl($scope, $http) {
         $scope.compare = {};
         angular.forEach($scope.selected(), function(file) {
             for (var i = props.length - 1; i >= 0; i--) {
-                var val = file.data.log[props[i]];
+                var val = file.calc[props[i]];
                 $scope.ranges.best[props[i]] = Math.min($scope.ranges.best[props[i]] || val, val);
                 $scope.ranges.worst[props[i]] = Math.max($scope.ranges.worst[props[i]] || val, val);
             }
             if (file.unit) {
                 for (i = props.length - 1; i >= 0; i--) {
-                    $scope.compare[props[i]] = file.data.log[props[i]];
+                    $scope.compare[props[i]] = file.calc[props[i]];
                 }
             }
         });
@@ -42,11 +51,11 @@ function HarCtrl($scope, $http) {
         var prev;
         var order = ($scope.compareWith == 'next') ? 'reverse' : '';
         angular.forEach($scope.selected(order), function(file) {
-            file.data.perc = {};
+            file.perc = {};
             for (var i = props.length - 1; i >= 0; i--) {
-                var c = (($scope.compareWith == 'previous' || $scope.compareWith == 'next') && prev) ? prev.data.log[props[i]] : $scope.compare[props[i]];
-                file.data.perc[props[i]] = (file.data.log[props[i]] / c * 100 - 100);
-                // console.log(c, file.data.log[props[i]]);
+                var c = (($scope.compareWith == 'previous' || $scope.compareWith == 'next') && prev) ? prev.calc[props[i]] : $scope.compare[props[i]];
+                file.perc[props[i]] = (file.calc[props[i]] / c * 100 - 100);
+                // console.log(c, file);
             }
             prev = file;
         });
@@ -64,20 +73,53 @@ function HarCtrl($scope, $http) {
     $scope.$watch('compareWith', $scope.compareSet, true);
 
     $scope.addFile = function(f, e) {
+        var calc = {};
+        var t;
         $scope.safeApply(function(){
-            e.log.entriesLength = e.log.entries.length;
-            e.log.entriesSize = 0;
-            e.log.entriesReqHeadersSize = 0;
-            e.log.entriesResHeadersSize = 0;
-            e.log.respCodes = [];
+            calc.entriesLength = e.log.entries.length;
+            calc.onloadTime = e.log.pages[0].pageTimings.onLoad;
+            calc.entriesSize = 0;
+            calc.entriesReqHeadersSize = 0;
+            calc.entriesResHeadersSize = 0;
+            calc.entriesResSize = 0;
+            calc.totalTime = 0;
+            calc.timingsPerc = {};
+            calc.timings = {};
+            calc.respCodes = [];
             for (var i = e.log.entries.length - 1; i >= 0; i--) {
-                e.log.entriesSize += e.log.entries[i].response.bodySize;
-                e.log.entriesReqHeadersSize += e.log.entries[i].request.headersSize;
-                e.log.entriesResHeadersSize += e.log.entries[i].response.headersSize;
-                e.log.respCodes[e.log.entries[i].response.status] += 1;
+                calc.totalTime += e.log.entries[i].time;
+
+                for (var key in e.log.entries[i].timings) {
+                    calc.timings[key] = (calc.timings[key]) ? calc.timings[key] : 0;
+                    calc.timings[key] += (e.log.entries[i].timings[key] != -1) ? e.log.entries[i].timings[key] : 0;
+                }
+
+                calc.entriesSize += e.log.entries[i].response.bodySize;
+                calc.entriesReqHeadersSize += e.log.entries[i].request.headersSize;
+                calc.entriesResHeadersSize += e.log.entries[i].response.headersSize;
+                calc.entriesResSize += e.log.entries[i].response.headersSize + e.log.entries[i].response.bodySize;
+                if (!calc.respCodes[e.log.entries[i].response.status])
+                    calc.respCodes[e.log.entries[i].response.status] = 0;
+                calc.respCodes[e.log.entries[i].response.status] += 1;
             }
-            // console.log(f, e);
-            $scope.files.push({file: f, data: e, check: true, unit: false});
+
+            for (var key in calc.timings) {
+                calc.timingsPerc[key] = calc.timings[key] / calc.totalTime * 100;
+            }
+            console.log({
+                name: f,
+                log: e.log,
+                calc: calc,
+                check: true,
+                unit: false
+            });
+            $scope.files.push({
+                name: f,
+                log: e.log,
+                calc: calc,
+                check: true,
+                unit: false
+            });
         });
     };
 
@@ -109,8 +151,8 @@ function HarCtrl($scope, $http) {
             if (file.check) sel.push(file);
         });
         var sel = sel.sort(function(a, b){
-            a = new Date(a.data.log.pages[0].startedDateTime);
-            b = new Date(b.data.log.pages[0].startedDateTime);
+            a = new Date(a.log.pages[0].startedDateTime);
+            b = new Date(b.log.pages[0].startedDateTime);
             return (a < b) ? -1 : (a > b) ? 1 : 0;
         });
         return (order && order == 'reverse') ? sel.reverse() : sel;
