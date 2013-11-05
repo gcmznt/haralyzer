@@ -18,19 +18,37 @@
 <body>
     <div ng-controller="HarCtrl" class="container-fluid" id="main-controller">
         <h1>HARalyzer</h1>
-        <p>
-            <a href="http://www.savagechickens.com/2008/09/talk-like-a-pirate-2008.html" class="har" ng-show="!files.length">
-                <img src="/static/chickenarryarhar.jpg" alt="HARRRR!">
-            </a>
-        </p>
         <h2>Choose your files</h2>
         <p>
             Drop the HAR files on the page or find them on your PC
             <input type="file" id="inputfile" multiple="multiple">
         </p>
-        <button type="button" class="btn btn-default" ng-click="demo()" ng-show="!files.length">load demo files</button>
-
-        <h2 ng-show="selected().length">See the results</h2>
+        <p>
+            <button type="button" class="btn btn-default" ng-click="demo()" ng-show="!files.length">load demo files</button>
+        </p>
+        <ul ng-repeat="file in files">
+            <li>
+                <div class="btn-group">
+                    <button type="button" ng-click="file.check = !file.check" class="btn btn-primary btn-xs"><i class="glyphicon" ng-class="{'glyphicon-eye-open': !file.check, 'glyphicon-eye-close': file.check}"></i></button>
+                    <button type="button" ng-click="remove(file)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
+                </div>
+                {{ file.name }}
+                <small>[{{ file.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}]</small>
+            </li>
+        </ul>
+        <div class="functions" ng-show="files.length">
+            <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'view all' || 'hide all' }}</button>
+            <!-- <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button> -->
+        </div>
+        <h2>See the results</h2>
+        <p>
+            <a href="http://www.savagechickens.com/2008/09/talk-like-a-pirate-2008.html" class="har" ng-show="!files.length">
+                <img src="/static/chickenarryarhar.jpg" alt="HARRRR!">
+            </a>
+        </p>
+        <p ng-show="files.length && !selected().length">
+            No files selected
+        </p>
         <div ng-show="selected().length">
             <p>
                 compare files with
@@ -174,21 +192,6 @@
                     </span>
                 </div>
             </div>
-        </div>
-        <h2 ng-show="hidden().length">Hidden files</h2>
-        <ul ng-repeat="file in hidden()">
-            <li>
-                <div class="btn-group">
-                    <button type="button" ng-click="file.check = true" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-eye-open"></i></button>
-                    <button type="button" ng-click="remove(file)" class="btn btn-primary btn-xs"><i class="glyphicon glyphicon-trash"></i></button>
-                </div>
-                {{ file.name }}
-                <small>[{{ file.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}]</small>
-            </li>
-        </ul>
-        <div class="functions" ng-show="hidden().length">
-            <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'view all' || 'uncheck all' }}</button>
-            <!-- <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button> -->
         </div>
     </div>
 

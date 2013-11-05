@@ -130,7 +130,7 @@ function HarCtrl($scope, $http) {
     };
 
     $scope.unit = function(f) {
-        angular.forEach($scope.selected(), function(file) {
+        angular.forEach($scope.files, function(file) {
             if (file != f) file.unit = false;
         });
         f.unit = !f.unit;
