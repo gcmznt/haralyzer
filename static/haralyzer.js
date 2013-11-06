@@ -137,6 +137,10 @@ function HarCtrl($scope, $http) {
         $scope.compareWith = 'selected';
     };
 
+    $scope.removeAll = function() {
+        $scope.files = [];
+    };
+
     $scope.removeSelected = function() {
         var oldFiles = $scope.files;
         $scope.files = [];
