@@ -38,7 +38,7 @@
         </ul>
         <div class="functions" ng-show="files.length">
             <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'view all' || 'hide all' }}</button>
-            <!-- <button type="button" class="btn btn-default" ng-click="removeSelected()" ng-disabled="!selected().length">remove</button> -->
+            <button type="button" class="btn btn-default" ng-click="removeAll()">remove all</button>
         </div>
         <h2>See the results</h2>
         <p>
@@ -51,7 +51,7 @@
         </p>
         <div ng-show="selected().length">
             <p>
-                compare files with
+                compare each file with the
                 <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-primary" ng-class="{'active': (compareWith == 'best')}">
                         <input type="radio" ng-model="compareWith" value="best">
