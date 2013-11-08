@@ -15,6 +15,7 @@ function HarCtrl($scope, $http) {
     $scope.compare = {};
     $scope.compareWith = 'selected';
     $scope.viewtype = 'simple';
+    $scope.loading = 0;
 
 
     $scope.safeApply = function(fn) {
@@ -194,22 +195,28 @@ function HarCtrl($scope, $http) {
     };
 
     $scope.demo = function(set) {
+        $scope.loading = set;
         if (set == 1) {
             $http.get('har/giko.it.http.har').then(function(response) {
                 $scope.addFile('giko.it.http.har', response.data);
+                $scope.loading = 0;
             });
             $http.get('har/giko.it.http.min.har').then(function(response) {
                 $scope.addFile('giko.it.http.min.har', response.data);
+                $scope.loading = 0;
             });
             $http.get('har/giko.it.http.gzip.min.har').then(function(response) {
                 $scope.addFile('giko.it.http.gzip.min.har', response.data);
+                $scope.loading = 0;
             });
         } else if (set == 2) {
             $http.get('har/giko.it.http.gzip.har').then(function(response) {
                 $scope.addFile('giko.it.http.gzip.har', response.data);
+                $scope.loading = 0;
             });
             $http.get('har/giko.it.spdy.gzip.har').then(function(response) {
                 $scope.addFile('giko.it.spdy.gzip.har', response.data);
+                $scope.loading = 0;
             });
         }
     };

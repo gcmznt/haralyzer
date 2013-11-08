@@ -24,8 +24,12 @@
             <input type="file" id="inputfile" multiple="multiple">
         </p>
         <p>
-            <button type="button" class="btn btn-default btn-primary" ng-click="demo(1)" ng-show="!files.length">Load <strong>minified and gzip</strong> demo</button>
-            <button type="button" class="btn btn-default btn-primary" ng-click="demo(2)" ng-show="!files.length">Load <strong>HTTP vs SPDY</strong> demo</button>
+            <button type="button" ng-disabled="loading == 1" class="btn btn-default btn-primary" ng-click="demo(1)" ng-show="!files.length">
+                {{ (loading == '1') && 'Loading...' || 'Load Minified and GZip demo' }}
+            </button>
+            <button type="button" ng-disabled="loading == 2" class="btn btn-default btn-primary" ng-click="demo(2)" ng-show="!files.length">
+                {{ (loading == '2') && 'Loading...' || 'Load HTTP vs SPDY demo' }}
+            </button>
         </p>
         <ul ng-repeat="file in files">
             <li>
