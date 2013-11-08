@@ -6,7 +6,8 @@ function HarCtrl($scope, $http) {
         'entriesResHeadersSize',
         'entriesResSize',
         'totalTime',
-        'onloadTime'
+        'onLoadTime',
+        'onContentLoadTime'
     ];
 
     $scope.files = [];
@@ -77,7 +78,8 @@ function HarCtrl($scope, $http) {
         var t;
         $scope.safeApply(function(){
             calc.entriesLength = e.log.entries.length;
-            calc.onloadTime = e.log.pages[0].pageTimings.onLoad;
+            calc.onLoadTime = e.log.pages[0].pageTimings.onLoad;
+            calc.onContentLoadTime = e.log.pages[0].pageTimings.onContentLoad;
             calc.entriesSize = 0;
             calc.entriesReqHeadersSize = 0;
             calc.entriesResHeadersSize = 0;
@@ -106,13 +108,6 @@ function HarCtrl($scope, $http) {
             for (var key in calc.timings) {
                 calc.timingsPerc[key] = calc.timings[key] / calc.totalTime * 100;
             }
-            console.log({
-                name: f,
-                log: e.log,
-                calc: calc,
-                check: true,
-                unit: false
-            });
             $scope.files.push({
                 name: f,
                 log: e.log,
