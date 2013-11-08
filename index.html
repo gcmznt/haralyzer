@@ -24,8 +24,8 @@
             <input type="file" id="inputfile" multiple="multiple">
         </p>
         <p>
-            <button type="button" class="btn btn-default btn-primary" ng-click="demo(1)" ng-show="!files.length">Load demo 1 [minified and gzip]</button>
-            <button type="button" class="btn btn-default btn-primary" ng-click="demo(2)" ng-show="!files.length">Load demo 2 [HTTP vs SPDY]</button>
+            <button type="button" class="btn btn-default btn-primary" ng-click="demo(1)" ng-show="!files.length">Load <strong>minified and gzip</strong> demo</button>
+            <button type="button" class="btn btn-default btn-primary" ng-click="demo(2)" ng-show="!files.length">Load <strong>HTTP vs SPDY</strong> demo</button>
         </p>
         <ul ng-repeat="file in files">
             <li>
@@ -102,7 +102,8 @@
                 <span>Response</span>
                 <span class="full">Response Headers</span>
                 <span class="full">Response Size</span>
-                <span>Onload time</span>
+                <span>OnLoad</span>
+                <span>OnContentLoad</span>
                 <span>Total transfer time</span>
                 <span>Transfer time splitted</span>
                 <span class="full">Blocked</span>
@@ -143,9 +144,13 @@
                         <small class="label" ng-show="file.perc.entriesSize"><i ng-show="file.perc.entriesSize > 0">+</i>{{ file.perc.entriesSize | number:2 }}%</small>
                         <i class="glyphicon glyphicon-star" ng-show="ranges.best.entriesSize == file.calc.entriesSize && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.entriesSize == file.calc.entriesSize && compareWith == 'worst'"></i> {{ file.calc.entriesSize | number }} B
                     </span>
-                    <span class="text-right" ng-class="{'best': (ranges.best.onloadTime == file.calc.onloadTime), 'worst': (file.perc.onloadTime > 0), 'better': (file.perc.onloadTime < 0)}">
-                        <small class="label" ng-show="file.perc.onloadTime"><i ng-show="file.perc.onloadTime > 0">+</i>{{ file.perc.onloadTime | number:2 }}%</small>
-                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.onloadTime == file.calc.onloadTime && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.onloadTime == file.calc.onloadTime && compareWith == 'worst'"></i> {{ file.calc.onloadTime | number:0 }} ms
+                    <span class="text-right" ng-class="{'best': (ranges.best.onLoadTime == file.calc.onLoadTime), 'worst': (file.perc.onLoadTime > 0), 'better': (file.perc.onLoadTime < 0)}">
+                        <small class="label" ng-show="file.perc.onLoadTime"><i ng-show="file.perc.onLoadTime > 0">+</i>{{ file.perc.onLoadTime | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.onLoadTime == file.calc.onLoadTime && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.onLoadTime == file.calc.onLoadTime && compareWith == 'worst'"></i> {{ file.calc.onLoadTime | number:0 }} ms
+                    </span>
+                    <span class="text-right" ng-class="{'best': (ranges.best.onContentLoadTime == file.calc.onContentLoadTime), 'worst': (file.perc.onContentLoadTime > 0), 'better': (file.perc.onContentLoadTime < 0)}">
+                        <small class="label" ng-show="file.perc.onContentLoadTime"><i ng-show="file.perc.onContentLoadTime > 0">+</i>{{ file.perc.onContentLoadTime | number:2 }}%</small>
+                        <i class="glyphicon glyphicon-star" ng-show="ranges.best.onContentLoadTime == file.calc.onContentLoadTime && compareWith != 'worst'"></i><i class="glyphicon glyphicon-star-empty" ng-show="ranges.worst.onContentLoadTime == file.calc.onContentLoadTime && compareWith == 'worst'"></i> {{ file.calc.onContentLoadTime | number:0 }} ms
                     </span>
                     <span class="text-right" ng-class="{'best': (ranges.best.totalTime == file.calc.totalTime), 'worst': (file.perc.totalTime > 0), 'better': (file.perc.totalTime < 0)}">
                         <small class="label" ng-show="file.perc.totalTime"><i ng-show="file.perc.totalTime > 0">+</i>{{ file.perc.totalTime | number:2 }}%</small>
