@@ -24,7 +24,8 @@
             <input type="file" id="inputfile" multiple="multiple">
         </p>
         <p>
-            <button type="button" class="btn btn-default" ng-click="demo()" ng-show="!files.length">load demo files</button>
+            <button type="button" class="btn btn-default btn-primary" ng-click="demo(1)" ng-show="!files.length">Load demo 1 [minified and gzip]</button>
+            <button type="button" class="btn btn-default btn-primary" ng-click="demo(2)" ng-show="!files.length">Load demo 2 [HTTP vs SPDY]</button>
         </p>
         <ul ng-repeat="file in files">
             <li>
