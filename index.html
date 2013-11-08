@@ -17,20 +17,25 @@
 </head>
 <body>
     <div ng-controller="HarCtrl" class="container-fluid" id="main-controller">
-        <h1>HARalyzer</h1>
-        <h2>Choose your files</h2>
-        <p>
-            Drop the HAR files on the page or find them on your PC
+        <div class="jumbotron">
+            <h1>HARalyzer</h1>
+            <p>A tool to compare HAR files and test your performance optimizations</p>
+        </div>
+        <h2>Choose your files <small>Drop the HAR files on the page or find them on your PC</small></h2>
+        <div class="functions">
             <input type="file" id="inputfile" multiple="multiple">
-        </p>
-        <p>
+            <button type="button" class="btn btn-default btn-primary" ng-click="loadLocal()">
+                Load local files
+            </button>
             <button type="button" ng-disabled="loading == 1" class="btn btn-default btn-primary" ng-click="demo(1)" ng-show="!files.length">
                 {{ (loading == '1') && 'Loading...' || 'Load Minified and GZip demo' }}
             </button>
             <button type="button" ng-disabled="loading == 2" class="btn btn-default btn-primary" ng-click="demo(2)" ng-show="!files.length">
                 {{ (loading == '2') && 'Loading...' || 'Load HTTP vs SPDY demo' }}
             </button>
-        </p>
+            <button type="button" class="btn btn-default" ng-click="selectAll()" ng-show="files.length">{{ (selected().length < files.length) && 'view all' || 'hide all' }}</button>
+            <button type="button" class="btn btn-default" ng-click="removeAll()" ng-show="files.length">remove all</button>
+        </div>
         <ul ng-repeat="file in files">
             <li>
                 <div class="btn-group">
@@ -41,10 +46,6 @@
                 <small>[{{ file.log.pages.0.startedDateTime | date:'dd MMM yyyy @ H:mm' }}]</small>
             </li>
         </ul>
-        <div class="functions" ng-show="files.length">
-            <button type="button" class="btn btn-default" ng-click="selectAll()">{{ (selected().length < files.length) && 'view all' || 'hide all' }}</button>
-            <button type="button" class="btn btn-default" ng-click="removeAll()">remove all</button>
-        </div>
         <h2>See the results</h2>
         <p>
             <a href="http://www.savagechickens.com/2008/09/talk-like-a-pirate-2008.html" class="har" ng-show="!files.length">
@@ -54,48 +55,44 @@
         <p ng-show="files.length && !selected().length">
             No files selected
         </p>
-        <div ng-show="selected().length">
-            <p>
-                compare each file with the
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'best')}">
-                        <input type="radio" ng-model="compareWith" value="best">
-                        <i class="glyphicon glyphicon-star"></i> best
-                    </label>
-                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'worst')}">
-                        <input type="radio" ng-model="compareWith" value="worst">
-                        <i class="glyphicon glyphicon-star-empty"></i> worst
-                    </label>
-                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'previous')}">
-                        <input type="radio" ng-model="compareWith" value="previous">
-                        <i class="glyphicon glyphicon-arrow-left"></i> previous
-                    </label>
-                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'next')}">
-                        <input type="radio" ng-model="compareWith" value="next">
-                        <i class="glyphicon glyphicon-arrow-right"></i> next
-                    </label>
-                    <label class="btn btn-primary" ng-class="{'active': (compareWith == 'selected')}">
-                        <input type="radio" ng-model="compareWith" value="selected">
-                        <i class="glyphicon glyphicon-ok"></i> file selected
-                    </label>
-                </div>
-            </p>
-        </div>
-        <div ng-show="selected().length">
-            <p>
-                show
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-primary" ng-class="{'active': (viewtype == 'full')}">
-                        <input type="radio" ng-model="viewtype" value="full">
-                        <i class="glyphicon glyphicon-th"></i> full list
-                    </label>
-                    <label class="btn btn-primary" ng-class="{'active': (viewtype == 'simple')}">
-                        <input type="radio" ng-model="viewtype" value="simple">
-                        <i class="glyphicon glyphicon-th-large"></i> only main data
-                    </label>
-                </div>
-            </p>
-        </div>
+        <p ng-show="selected().length">
+            compare each file with the
+            <span class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'best')}">
+                    <input type="radio" ng-model="compareWith" value="best">
+                    <i class="glyphicon glyphicon-star"></i> best
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'worst')}">
+                    <input type="radio" ng-model="compareWith" value="worst">
+                    <i class="glyphicon glyphicon-star-empty"></i> worst
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'previous')}">
+                    <input type="radio" ng-model="compareWith" value="previous">
+                    <i class="glyphicon glyphicon-arrow-left"></i> previous
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'next')}">
+                    <input type="radio" ng-model="compareWith" value="next">
+                    <i class="glyphicon glyphicon-arrow-right"></i> next
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (compareWith == 'selected')}">
+                    <input type="radio" ng-model="compareWith" value="selected">
+                    <i class="glyphicon glyphicon-ok"></i> file selected
+                </label>
+            </span>
+        </p>
+        <p ng-show="selected().length">
+            show
+            <span class="btn-group" data-toggle="buttons">
+                <label class="btn btn-primary" ng-class="{'active': (viewtype == 'full')}">
+                    <input type="radio" ng-model="viewtype" value="full">
+                    <i class="glyphicon glyphicon-th"></i> full list
+                </label>
+                <label class="btn btn-primary" ng-class="{'active': (viewtype == 'simple')}">
+                    <input type="radio" ng-model="viewtype" value="simple">
+                    <i class="glyphicon glyphicon-th-large"></i> only main data
+                </label>
+            </span>
+        </p>
         <div class="compare {{ viewtype }}" ng-show="selected().length">
             <div class="compareCol">
                 <span>File</span>
