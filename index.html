@@ -19,7 +19,7 @@
     <div ng-controller="HarCtrl" class="container-fluid" id="main-controller">
         <div class="jumbotron">
             <h1>HARalyzer</h1>
-            <p>A tool to compare HAR files and test your performance optimizations</p>
+            <p>A tool to compare HAR files and test your performance optimizations.
         </div>
         <h2>Choose your files <small>Drop the HAR files on the page or find them on your PC</small></h2>
         <div class="functions">
@@ -27,10 +27,10 @@
             <button type="button" class="btn btn-default btn-primary" ng-click="loadLocal()">
                 Load local files
             </button>
-            <button type="button" ng-disabled="loading == 1" class="btn btn-default btn-primary" ng-click="demo(1)" ng-show="!files.length">
+            <button type="button" ng-disabled="loading == 1" class="btn btn-default" ng-click="demo(1)" ng-show="!files.length">
                 {{ (loading == '1') && 'Loading...' || 'Load Minified and GZip demo' }}
             </button>
-            <button type="button" ng-disabled="loading == 2" class="btn btn-default btn-primary" ng-click="demo(2)" ng-show="!files.length">
+            <button type="button" ng-disabled="loading == 2" class="btn btn-default" ng-click="demo(2)" ng-show="!files.length">
                 {{ (loading == '2') && 'Loading...' || 'Load HTTP vs SPDY demo' }}
             </button>
             <button type="button" class="btn btn-default" ng-click="selectAll()" ng-show="files.length">{{ (selected().length < files.length) && 'view all' || 'hide all' }}</button>
