@@ -194,6 +194,10 @@ function HarCtrl($scope, $http) {
         });
     };
 
+    $scope.loadLocal = function() {
+        document.querySelector("#inputfile").click();
+    };
+
     $scope.demo = function(set) {
         $scope.loading = set;
         if (set == 1) {

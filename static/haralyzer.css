@@ -8,7 +8,7 @@ body {
 }
 
 #inputfile {
-    display: inline;
+    display: none;
 }
 #report {
     padding: 0 10px;
